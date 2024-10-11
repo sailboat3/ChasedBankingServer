@@ -22,6 +22,9 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+
+        //Main Banking interface scene
+
         //Label
         Label label = new Label("Welcome to the Chased Bank Banking server.");
         HBox labelBox = new HBox(label);
@@ -98,51 +101,35 @@ public class HelloApplication extends Application {
 
         Scene mainMenuScene = new Scene(mainBank, 480, 320);
 
+        //Login Interface scene
 
-
-
-
-
-
-
-
-
-
+        //Title
         Label titleText = new Label("Chased Inc. Banking Server");
         titleText.setFont(Font.font(32));
         HBox title = new HBox();
         title.setAlignment(Pos.CENTER);
         title.getChildren().add(titleText);
 
+        //Login fields and button
         TextField username = new TextField();
         username.setMaxWidth(256);
         username.setPromptText("Username");
-
-        TextField password = new TextField();
+        PasswordField password = new PasswordField();
         password.setMaxWidth(256);
         password.setPromptText("Password");
-
         Button loginButton = new Button("Login");
         loginButton.setOnAction(e -> stage.setScene(mainMenuScene));
-
         VBox loginMenu = new VBox();
         loginMenu.setAlignment(Pos.CENTER);
         loginMenu.getChildren().addAll(username, password, loginButton);
 
+        //All together now
         BorderPane loginPane = new BorderPane();
-
         loginPane.setTop(title);
         loginPane.setCenter(loginMenu);
-
         Scene loginScene = new Scene(loginPane, 480, 320);
 
-
-
-
-
-
-
-
+        //Finish up and show window
         stage.setScene(loginScene);
         stage.setTitle("Chased Banking Server");
         stage.show();
