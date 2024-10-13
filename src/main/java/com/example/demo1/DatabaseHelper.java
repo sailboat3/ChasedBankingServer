@@ -14,7 +14,7 @@ public class DatabaseHelper {
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(DB_URL);
-            System.out.println("SQL is connected");
+            System.out.println("SQL has been connected/used");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

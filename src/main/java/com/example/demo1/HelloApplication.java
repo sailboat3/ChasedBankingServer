@@ -1,9 +1,8 @@
 package com.example.demo1;
 
-import com.example.demo1.DatabaseHelper;
-
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -38,6 +37,7 @@ public class HelloApplication extends Application {
 
         //Label
         Label label = new Label("Welcome to the Chased Bank Banking server.");
+        HBox.setMargin(label, new Insets(10, 0, 10, 0));
         HBox labelBox = new HBox(label);
         labelBox.setAlignment(Pos.CENTER);
 
@@ -55,38 +55,42 @@ public class HelloApplication extends Application {
 
         //Text Input
         Label dollarSign = new Label("$");
+        GridPane.setConstraints(dollarSign, 0, 0);
         TextField amount = new TextField();
+        GridPane.setMargin(amount, new Insets(5));
+        GridPane.setConstraints(amount, 1,0);
+        GridPane.setColumnSpan(amount, 2);
         amount.setTextFormatter(doubleTextFormatter);
         amount.setMaxWidth(256);
         amount.setPromptText("Amount");
-        HBox moneyInput = new HBox();
-        moneyInput.getChildren().addAll(dollarSign, amount);
-        moneyInput.setAlignment(Pos.CENTER);
 
         //Deposit and Withdrawal buttons
         Button deposit = new Button("Deposit");
+        GridPane.setMargin(deposit, new Insets(5));
+        GridPane.setConstraints(deposit, 1,1);
         Button withdrawal = new Button("Withdrawal");
-        HBox moneyActionButtons = new HBox();
-        moneyActionButtons.getChildren().addAll(deposit, withdrawal);
-        moneyActionButtons.setAlignment(Pos.CENTER);
+        GridPane.setMargin(withdrawal, new Insets(5));
+        GridPane.setConstraints(withdrawal, 2, 1);
+
 
         //Balance Display
-        Label balanceLabel = new Label("Welcome, " + loggedInUser);
+        Label balanceLabel = new Label("Current Balance:");
         Text balanceAmount = new Text("$" + balance);
         balanceAmount.setFont(Font.font("Minecraft", 64));
         balanceAmount.setFill(Color.GREEN);
         VBox right = new VBox(balanceLabel, balanceAmount);
         right.setAlignment(Pos.CENTER);
 
-        //Put all the left side things in a VBox
-        VBox left = new VBox(moneyInput, moneyActionButtons);
+        //Put all the left side things in a Grid Pane
+        GridPane left = new GridPane();
+        left.getChildren().addAll(dollarSign, amount, deposit, withdrawal);
+        left.setAlignment(Pos.CENTER);
 
         //Final Pane
         SplitPane bankSplitPane = new SplitPane();
-        final StackPane sp1 = new StackPane();
-        sp1.getChildren().add(left);
-        final StackPane sp2 = new StackPane();
-        sp2.getChildren().add(right);
+
+        final StackPane sp1 = new StackPane(left);
+        final StackPane sp2 = new StackPane(right);
         bankSplitPane.getItems().addAll(sp1, sp2);
         bankSplitPane.setDividerPositions(0.4f, 0.6f);
         bankSplitPane.setScaleShape(true);
@@ -112,25 +116,43 @@ public class HelloApplication extends Application {
             }
         });
 
-        Scene mainMenuScene = new Scene(mainBank, 480, 320);
+        Scene mainMenuScene = new Scene(mainBank, 960, 640);
+        mainMenuScene.getRoot().setStyle("-fx-font-family: Minecraft; -fx-font-size: 14;");
+
 
         //Login Interface scene
 
         //Title
         Label titleText = new Label("Chased Inc. Banking Server");
         titleText.setFont(Font.font(32));
-        HBox title = new HBox();
+        HBox.setMargin(titleText, new Insets(20));
+        HBox title = new HBox(titleText);
         title.setAlignment(Pos.CENTER);
-        title.getChildren().add(titleText);
 
         //Login fields and button
         TextField username = new TextField();
+        GridPane.setMargin(username, new Insets(5, 5, 5, 5));
+        GridPane.setConstraints(username, 1, 0);
         username.setMaxWidth(256);
         username.setPromptText("Username");
+
+        Label usernameLabel = new Label("Username: ");
+        GridPane.setHalignment(usernameLabel, HPos.RIGHT);
+        GridPane.setConstraints(usernameLabel, 0,0);
+
         PasswordField password = new PasswordField();
+        GridPane.setMargin(password, new Insets(5, 5, 5, 5));
+        GridPane.setConstraints(password, 1,1);
         password.setMaxWidth(256);
         password.setPromptText("Password");
-        Button loginButton = new Button("Login");
+
+        Label passwordLabel = new Label("Password: ");
+        GridPane.setHalignment(passwordLabel, HPos.RIGHT);
+        GridPane.setConstraints(passwordLabel, 0,1);
+
+        Button loginButton = new Button(">");
+        GridPane.setMargin(loginButton, new Insets(5, 5, 5, 5));
+        GridPane.setConstraints(loginButton, 2,1);
         loginButton.setOnAction(e -> {
             User retrievedUser = DatabaseHelper.getUser(username.getText());
             if (retrievedUser != null) {
@@ -138,7 +160,7 @@ public class HelloApplication extends Application {
                     balance = retrievedUser.getBalance();
                     balanceAmount.setText("$" + balance);
                     loggedInUser = retrievedUser.getUsername();
-                    balanceLabel.setText("Welcome, " + loggedInUser);
+                    label.setText("Welcome to Chased Bank, " + loggedInUser + "!");
                     stage.setScene(mainMenuScene);
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -160,17 +182,33 @@ public class HelloApplication extends Application {
                 password.setText("");
             }
         });
-        VBox loginMenu = new VBox();
+
+        ColumnConstraints col1 = new ColumnConstraints();
+        ColumnConstraints col2 = new ColumnConstraints();
+        ColumnConstraints col3 = new ColumnConstraints();
+
+        col1.setPercentWidth(25);  // 25% width for the first column
+        col2.setPercentWidth(50);  // 50% width for the center column with the TextField
+        col3.setPercentWidth(25);  // 25% width for the third column
+
+        GridPane loginMenu = new GridPane();
+        loginMenu.getChildren().addAll(usernameLabel, passwordLabel, username, password, loginButton);
+        loginMenu.getColumnConstraints().addAll(col1, col2, col3);
+        loginMenu.setMaxWidth(400);
         loginMenu.setAlignment(Pos.CENTER);
-        loginMenu.getChildren().addAll(username, password, loginButton);
 
         //Add User Button
         Button addUser = new Button("Add User");
+        HBox.setMargin(addUser, new Insets(10, 10, 10, 10));
+        HBox addUserHBox = new HBox(addUser);
+        addUserHBox.setAlignment(Pos.BOTTOM_RIGHT);
         addUser.setOnAction(e -> {
-            // Create the custom dialog.
+            // Create the dialog.
             Dialog<Pair<String, String>> dialog = new Dialog<>();
             dialog.setTitle("Add User");
             dialog.setHeaderText("Enter User Details");
+            dialog.getDialogPane().setStyle("-fx-font-family: Minecraft; -fx-font-size: 14;");
+
 
             // Set the button types.
             ButtonType loginButtonType = new ButtonType("Create User", ButtonBar.ButtonData.OK_DONE);
@@ -226,17 +264,22 @@ public class HelloApplication extends Application {
         BorderPane loginPane = new BorderPane();
         loginPane.setTop(title);
         loginPane.setCenter(loginMenu);
-        loginPane.setBottom(addUser);
-        Scene loginScene = new Scene(loginPane, 480, 320);
+        loginPane.setBottom(addUserHBox);
+        Scene loginScene = new Scene(loginPane, 960, 640);
+        loginScene.getRoot().setStyle("-fx-font-family: Minecraft; -fx-font-size: 14;");
+
 
         //Finish up and show window
         stage.setScene(loginScene);
         stage.setTitle("Chased Banking Server");
+        stage.setMinWidth(600);
+        stage.setMinHeight(300);
         stage.show();
     }
 
     public static void main(String[] args) {
+        System.setProperty("prism.text", "t2k");
         DatabaseHelper.createUsersTable();
-        launch();
+        launch(args);
     }
 }
